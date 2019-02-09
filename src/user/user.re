@@ -1,0 +1,2 @@
+let encodeUser = (email,password,firstname,lastname) =>
+    Json.Encode.(object_([("email", string(email)), ("password", string(password)),("firstName", string(firstname)),("lastName", string(lastname))]));

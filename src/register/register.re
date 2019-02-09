@@ -1,3 +1,6 @@
+open RequestModule;
+open User;
+
 type action =
   | UpdateEmail(string)
   | UpdateFirstName(string)
@@ -10,21 +13,41 @@ type state = {
   email : string,
   password : string,
   firstname : string,
-  lastname : string
+  lastname : string,
+  error : string
 };
 
 let component = ReasonReact.reducerComponent("Register");
 
 let make = _children => {
   ...component,
-  initialState: () => {email: "",firstname: "" ,lastname: "",password: ""  },
+  initialState: () => {email: "",firstname: "" ,lastname: "",password: "", error: ""},
   reducer: (action, state) =>
     switch action {
     | UpdateEmail(p) => ReasonReact.Update({...state,email: p})
     | UpdateFirstName(p) => ReasonReact.Update({...state,firstname : p})
     | UpdateLastName(p) => ReasonReact.Update({...state,lastname: p})
     | UpdatePassword(p) => ReasonReact.Update({...state,password : p})
-    | Register => ReasonReact.Update({...state,password : state.password})
+    | Register =>  ReasonReact.SideEffects(_self => {
+        /* let u = user(state.email,state.password,state.firstname,state.lastname) |> */
+        if(state.email != ""  && state.password  != "" && state.firstname  != "" && state.lastname  != "") {
+          Js.log(Js.Json.stringify(encodeUser(state.email,state.password,state.firstname,state.lastname)));
+          let promise = postExecute("http://localhost:8080/api/v1/users",
+                                    encodeUser(state.email,state.password,state.firstname,state.lastname)
+                                    );
+
+          /* |> Js.Promise.catch(err => {
+               Js.log("Failure!!", err);
+               ReasonReact.Update({...state,error : err})
+               Js.Promise.resolve(-2);
+             }); */
+        }
+        else {
+          Js.log(state.error)
+          ReasonReact.Update({...state,error : "Field(s) missing"})
+          Js.log("error field(s) missing")
+        }
+    })
     | RedirectToLogin => ReasonReact.Update({...state,firstname : state.password})
     },
   render: self =>
@@ -60,6 +83,7 @@ let make = _children => {
               (ReasonReact.string("Log in"))
             </button>
           </div>
+          <div id="error">(self.state.error |> ReasonReact.string)</div>
         </div>
     </div>
 };
