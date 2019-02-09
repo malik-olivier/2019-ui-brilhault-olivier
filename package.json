@@ -10,7 +10,7 @@
     "watch": "concurrently -k -n bsb,jest -c magenta,green,blue \"bsb -make-world -w\" \"jest --watch\" \"parcel watch index.html\"",
     "byte": "bsb -backend",
     "test": "npm run build && jest --coverage",
-    "parcel": "parcel index.html"
+    "parcel": "parcel --no-cache index.html"
   },
   "repository": {
     "type": "git",
