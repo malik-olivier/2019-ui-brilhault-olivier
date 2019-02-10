@@ -1,9 +1,4 @@
-open Register;
-open Login;
-
 let str = ReasonReact.string;
-
-module type Router = {let dangerouslyGetInitialUrl: unit => ReasonReact.Router.url;};
 
 module App = {
   type page =
@@ -18,41 +13,32 @@ module App = {
 
   let component = ReasonReact.reducerComponent("App");
 
-  let toPage = (url: ReasonReact.Router.url) =>
-    switch (url.hash) {
-    | "login" => Login
-    | _ => Register
-    };
-
-  let toUrl = page =>
-    switch (page) {
-    | Login => "login"
-    | _ => "register"
-    };
-
   let make = _children => {
     ...component,
-    initialState: () => {route: ReasonReact.Router.dangerouslyGetInitialUrl() |> toPage},
+    initialState: () => {route: Register},
+
     reducer: (action, state) =>
       switch (action) {
       /* router actions */
       | RedirectToLogin => ReasonReact.Update({...state, route: Login})
       | RedirectToRegister => ReasonReact.Update({...state, route: Register})
       },
+
     didMount: self => {
       let watcherID =
         ReasonReact.Router.watchUrl(url =>
           switch (url.hash) {
           | "login" => self.send(RedirectToLogin)
           | "register" => self.send(RedirectToRegister)
+          | "/" => self.send(RedirectToRegister)
           | _ => self.send(RedirectToRegister)
           }
         );
       self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
     },
-    render: ({state}) =>
+    render: self =>
       <div>
-        {switch (state.route) {
+        {switch (self.state.route) {
          | Login => <Login />
          | Register => <Register />
          }}
@@ -62,4 +48,4 @@ module App = {
   };
 };
 
-//ReactDOMRe.renderToElementWithId(<App />, "main");
+ReactDOMRe.renderToElementWithId(<App />, "main");
