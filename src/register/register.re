@@ -52,7 +52,7 @@ let make = _children => {
           },
       )
     | RedirectToLogin => ReasonReact.Update({...state, firstname: state.password})
-    //      ReasonReact.Router.push(string);
+    //      ReasonReact.Router.push(http://localhost:1234/login);
     },
   render: self =>
     <div>
@@ -91,7 +91,7 @@ let make = _children => {
         </div>
         <div>
           <button onClick={_ => self.send(Register)}> {ReasonReact.string("Register")} </button>
-          <button onClick={_ => self.send(RedirectToLogin)}> {ReasonReact.string("Log in")} </button>
+          <button onClick={_ => ReasonReact.Router.push("/login")}> {ReasonReact.string("Log in")} </button>
         </div>
         <div id="error"> {self.state.error |> ReasonReact.string} </div>
       </div>
