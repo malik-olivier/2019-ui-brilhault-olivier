@@ -1,39 +1,38 @@
+type page = 
+    | Dashboard
+    | Login;
+
 module App = {
-  let component = ReasonReact.statelessComponent("App");
-
-  type userStatus =
-    | isAuthenticated
-    | isNotAuthenticated;
-
-  type state =
-    | path: string
-    | isUserLoggedIn: Bool;
-
-  type action =
-    | RedirectToLogin
-    | RedirectToRegister;
-
-  let make = _children => {
-    ...component,
-    reducer: (action, state) =>
-      switch (action) {
-      /* router actions */
-      | RedirectToLogin => ReasonReact.Update({...state, nowShowing: AllTodos})
-      | RedirectToRegister => ReasonReact.Update({...state, nowShowing: AllTodos})
-      },
-    didMount: self => {
-      let watcherID =
-        ReasonReact.Router.watchUrl(url =>
-          switch (url.path) {
-          | ["login"] => self.send(RedirectToLogin)
-          | ["register"] => self.send(RedirectToRegister)
-          | _ => self.send(RedirectToRegister)
+    type state = {route: page};
+    type action =
+        | UpdatePage(page);
+    let component = ReasonReact.reducerComponent("App");
+    let make = _children => {
+        ...component, 
+        initialState: () => {route: Dashboard},
+        didMount: self => {
+            let watcherID =
+              ReasonReact.Router.watchUrl(url =>
+                switch (url.path) {
+                | ["login"] => self.send(UpdatePage(Login))
+                | _ => self.send(UpdatePage(Dashboard))
+                }
+              );
+              self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
+          },
+        reducer: (action, _state) =>
+            switch (action) {
+            | UpdatePage(route) => ReasonReact.Update({route: route})
+            },
+        
+        render: ({state}) =>
+        <div>(
+          switch (state.route) {
+          | Dashboard => <Register />
+          | Login => <Login />
           }
-        );
-      self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
-    },
-    render: _self => <Register />,
+        )</div>
+    };
   };
-};
 
-ReactDOMRe.renderToElementWithId(<App />, "main");
+  ReactDOMRe.renderToElementWithId(<App />, "main");
