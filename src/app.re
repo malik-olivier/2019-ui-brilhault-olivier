@@ -1,5 +1,6 @@
 type page = 
     | Register
+    | Score
     | Login;
 
 module App = {
@@ -15,6 +16,7 @@ module App = {
               ReasonReact.Router.watchUrl(url =>
                 switch (url.path) {
                 | ["login"] => self.send(UpdatePage(Login))
+                | ["score"] => self.send(UpdatePage(Score))
                 | _ => self.send(UpdatePage(Register))
                 }
               );
@@ -29,6 +31,7 @@ module App = {
         <div>(
           switch (state.route) {
           | Register => <Register />
+          | Score => <Score />
           | Login => <Login />
           }
         )</div>
