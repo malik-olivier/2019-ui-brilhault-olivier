@@ -37,6 +37,9 @@ let make = _children => {
               postExecute(
                 "http://localhost:8080/api/v1/users",
                 encodeUser(state.email, state.password, state.firstname, state.lastname),
+                () => {
+                  ReasonReact.Router.push("login"); 
+                }
               );
             ();
             /* |> Js.Promise.catch(err => {
