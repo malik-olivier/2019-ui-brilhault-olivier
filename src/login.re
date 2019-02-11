@@ -21,7 +21,9 @@ let make = _children => {
     | UpdatePassword(p) => ReasonReact.Update({...state, password: p})
     | RedirectToScore => ReasonReact.Update({...state, email: state.email})
     | Login => ReasonReact.Update({...state, password: state.password})
-    | RedirectToRegister => ReasonReact.Update({...state, email: state.email})
+    | RedirectToRegister =>
+      ReasonReact.Router.push("register");
+      ReasonReact.NoUpdate;
     },
   render: self =>
     <div>
