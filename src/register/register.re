@@ -17,6 +17,8 @@ type state = {
   error: string,
 };
 
+let apiUrl = "http://localhost:8080/api/v1/users";
+
 let component = ReasonReact.reducerComponent("Register");
 
 let make = _children => {
@@ -34,12 +36,8 @@ let make = _children => {
           /* let u = user(state.email,state.password,state.firstname,state.lastname) |> */
           if (state.email != "" && state.password != "" && state.firstname != "" && state.lastname != "") {
             let promise =
-              postExecute(
-                "http://localhost:8080/api/v1/users",
-                encodeUser(state.email, state.password, state.firstname, state.lastname),
-                () => {
-                  ReasonReact.Router.push("login"); 
-                }
+              postExecute(apiUrl, encodeUser(state.email, state.password, state.firstname, state.lastname), () =>
+                ReasonReact.Router.push("login")
               );
             ();
             /* |> Js.Promise.catch(err => {
@@ -53,10 +51,9 @@ let make = _children => {
             Js.log("error field(s) missing");
           },
       )
-    | RedirectToLogin => {
-        ReasonReact.Router.push("login"); 
-        ReasonReact.NoUpdate;
-      }
+    | RedirectToLogin =>
+      ReasonReact.Router.push("login");
+      ReasonReact.NoUpdate;
     },
   render: self =>
     <div>
