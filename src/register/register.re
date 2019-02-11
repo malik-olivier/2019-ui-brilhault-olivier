@@ -33,7 +33,6 @@ let make = _children => {
         _self =>
           /* let u = user(state.email,state.password,state.firstname,state.lastname) |> */
           if (state.email != "" && state.password != "" && state.firstname != "" && state.lastname != "") {
-            Js.log(Js.Json.stringify(encodeUser(state.email, state.password, state.firstname, state.lastname)));
             let promise =
               postExecute(
                 "http://localhost:8080/api/v1/users",
@@ -51,8 +50,10 @@ let make = _children => {
             Js.log("error field(s) missing");
           },
       )
-    | RedirectToLogin => ReasonReact.Update({...state, firstname: state.password})
-    //      ReasonReact.Router.push(http://localhost:1234/login);
+    | RedirectToLogin => {
+        ReasonReact.Router.push("login"); 
+        ReasonReact.NoUpdate;
+      }
     },
   render: self =>
     <div>
@@ -91,7 +92,7 @@ let make = _children => {
         </div>
         <div>
           <button onClick={_ => self.send(Register)}> {ReasonReact.string("Register")} </button>
-          <button onClick={_ => ReasonReact.Router.push("/login")}> {ReasonReact.string("Log in")} </button>
+          <button onClick={_ => self.send(RedirectToLogin)}> {ReasonReact.string("Log in")} </button>
         </div>
         <div id="error"> {self.state.error |> ReasonReact.string} </div>
       </div>

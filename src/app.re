@@ -1,51 +1,38 @@
-let str = ReasonReact.string;
+type page = 
+    | Dashboard
+    | Login;
 
 module App = {
-  type page =
-    | Login
-    | Register;
-
-  type state = {route: page};
-
-  type action =
-    | RedirectToLogin
-    | RedirectToRegister;
-
-  let component = ReasonReact.reducerComponent("App");
-
-  let make = _children => {
-    ...component,
-    initialState: () => {route: Register},
-
-    reducer: (action, state) =>
-      switch (action) {
-      /* router actions */
-      | RedirectToLogin => ReasonReact.Update({...state, route: Login})
-      | RedirectToRegister => ReasonReact.Update({...state, route: Register})
-      },
-
-    didMount: self => {
-      let watcherID =
-        ReasonReact.Router.watchUrl(url =>
-          switch (url.hash) {
-          | "login" => self.send(RedirectToLogin)
-          | "register" => self.send(RedirectToRegister)
-          | "/" => self.send(RedirectToRegister)
-          | _ => self.send(RedirectToRegister)
+    type state = {route: page};
+    type action =
+        | UpdatePage(page);
+    let component = ReasonReact.reducerComponent("App");
+    let make = _children => {
+        ...component, 
+        initialState: () => {route: Dashboard},
+        didMount: self => {
+            let watcherID =
+              ReasonReact.Router.watchUrl(url =>
+                switch (url.path) {
+                | ["login"] => self.send(UpdatePage(Login))
+                | _ => self.send(UpdatePage(Dashboard))
+                }
+              );
+              self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
+          },
+        reducer: (action, _state) =>
+            switch (action) {
+            | UpdatePage(route) => ReasonReact.Update({route: route})
+            },
+        
+        render: ({state}) =>
+        <div>(
+          switch (state.route) {
+          | Dashboard => <Register />
+          | Login => <Login />
           }
-        );
-      self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
-    },
-    render: self =>
-      <div>
-        {switch (self.state.route) {
-         | Login => <Login />
-         | Register => <Register />
-         }}
-        <a href="login"> {str("Login")} </a>
-        <a href="register"> {str("Register")} </a>
-      </div>,
+        )</div>
+    };
   };
-};
 
-ReactDOMRe.renderToElementWithId(<App />, "main");
+  ReactDOMRe.renderToElementWithId(<App />, "main");
