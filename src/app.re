@@ -1,5 +1,5 @@
 type page = 
-    | Dashboard
+    | Register
     | Login;
 
 module App = {
@@ -9,13 +9,13 @@ module App = {
     let component = ReasonReact.reducerComponent("App");
     let make = _children => {
         ...component, 
-        initialState: () => {route: Dashboard},
+        initialState: () => {route: Register},
         didMount: self => {
             let watcherID =
               ReasonReact.Router.watchUrl(url =>
                 switch (url.path) {
                 | ["login"] => self.send(UpdatePage(Login))
-                | _ => self.send(UpdatePage(Dashboard))
+                | _ => self.send(UpdatePage(Register))
                 }
               );
               self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
@@ -28,7 +28,7 @@ module App = {
         render: ({state}) =>
         <div>(
           switch (state.route) {
-          | Dashboard => <Register />
+          | Register => <Register />
           | Login => <Login />
           }
         )</div>

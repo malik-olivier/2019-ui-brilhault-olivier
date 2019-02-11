@@ -37,6 +37,9 @@ let make = _children => {
               postExecute(
                 "http://localhost:8080/api/v1/users",
                 encodeUser(state.email, state.password, state.firstname, state.lastname),
+                () => {
+                  ReasonReact.Router.push("login"); 
+                }
               );
             ();
             /* |> Js.Promise.catch(err => {
@@ -54,6 +57,7 @@ let make = _children => {
         ReasonReact.Router.push("login"); 
         ReasonReact.NoUpdate;
       }
+
     },
   render: self =>
     <div>
@@ -92,7 +96,7 @@ let make = _children => {
         </div>
         <div>
           <button onClick={_ => self.send(Register)}> {ReasonReact.string("Register")} </button>
-          <button onClick={_ => self.send(RedirectToLogin)}> {ReasonReact.string("Log in")} </button>
+          <button onClick={_ => ReasonReact.Router.push("/login")}> {ReasonReact.string("Log in")} </button>
         </div>
         <div id="error"> {self.state.error |> ReasonReact.string} </div>
       </div>
