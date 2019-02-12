@@ -35,16 +35,9 @@ let make = _children => {
         _self =>
           /* let u = user(state.email,state.password,state.firstname,state.lastname) |> */
           if (state.email != "" && state.password != "" && state.firstname != "" && state.lastname != "") {
-            let promise =
-              postExecute(apiUri, encodeUser(state.email, state.password, state.firstname, state.lastname), () =>
-                ReasonReact.Router.push("login")
-              );
-            ();
-            /* |> Js.Promise.catch(err => {
-                 Js.log("Failure!!", err);
-                 ReasonReact.Update({...state,error : err})
-                 Js.Promise.resolve(-2);
-               }); */
+            postExecute(apiUri, encodeUser(state.email, state.password, state.firstname, state.lastname), () =>
+              ReasonReact.Router.push("score")
+            );
           } else {
             Js.log(state.error);
             ReasonReact.Update({...state, error: "Field(s) missing"});

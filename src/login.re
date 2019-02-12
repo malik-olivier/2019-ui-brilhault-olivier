@@ -1,3 +1,8 @@
+open RequestModule;
+open User;
+
+[@bs.val] external apiUri: string = "process.env.API_URL";
+
 type action =
   | UpdateEmail(string)
   | UpdatePassword(string)
@@ -20,7 +25,16 @@ let make = _children => {
     | UpdateEmail(p) => ReasonReact.Update({...state, email: p})
     | UpdatePassword(p) => ReasonReact.Update({...state, password: p})
     | RedirectToScore => ReasonReact.Update({...state, email: state.email})
-    | Login => ReasonReact.Update({...state, password: state.password})
+    | Login =>
+      ReasonReact.SideEffects(
+        _self =>
+          if (state.email != "" && state.password != "") {
+            postExecute(apiUri, encodeLogin(state.email, state.password), () => ReasonReact.Router.push("score"));
+          } else {
+            ReasonReact.NoUpdate;
+            Js.log("error field(s) missing");
+          },
+      )
     | RedirectToRegister =>
       ReasonReact.Router.push("register");
       ReasonReact.NoUpdate;
