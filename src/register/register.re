@@ -39,9 +39,9 @@ let make = _children => {
               ReasonReact.Router.push("score")
             );
           } else {
-            Js.log(state.error);
             ReasonReact.Update({...state, error: "Field(s) missing"});
             Js.log("error field(s) missing");
+            alert("error field(s) missing")
           },
       )
     | RedirectToLogin =>

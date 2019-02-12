@@ -1,8 +1,3 @@
-type method =
-    | POST
-    | PUT
-    | DELETE
-    | GET;
 [@bs.val] external alert : string => unit = "alert";
 
 let postExecute = (url : string,body,callbackSuccess) => {

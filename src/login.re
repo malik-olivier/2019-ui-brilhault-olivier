@@ -29,11 +29,12 @@ let make = _children => {
       ReasonReact.SideEffects(
         _self =>
           if (state.email != "" && state.password != "") {
-            postExecute(apiUri, encodeLogin(state.email, state.password), () => ReasonReact.Router.push("score"));
+            postExecute(apiUri++"/login", encodeLogin(state.email, state.password), () => ReasonReact.Router.push("score"));
           } else {
             ReasonReact.NoUpdate;
             Js.log("error field(s) missing");
-          },
+            alert("error field(s) missing");
+          }
       )
     | RedirectToRegister =>
       ReasonReact.Router.push("register");
