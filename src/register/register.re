@@ -51,7 +51,6 @@ let make = _children => {
   render: self =>
     <div>
       <h1> {ReasonReact.string("Register for the best application")} </h1>
-      <h2> {self.state.firstname |> ReasonReact.string} </h2>
       <div>
         <div>
           <span>
