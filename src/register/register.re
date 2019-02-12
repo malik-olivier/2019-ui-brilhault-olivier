@@ -1,6 +1,8 @@
 open RequestModule;
 open User;
 
+[@bs.val] external apiUri: string = "process.env.API_URL";
+
 type action =
   | UpdateEmail(string)
   | UpdateFirstName(string)
@@ -16,8 +18,6 @@ type state = {
   lastname: string,
   error: string,
 };
-
-let apiUrl = "http://localhost:8080/api/v1/users";
 
 let component = ReasonReact.reducerComponent("Register");
 
@@ -36,7 +36,7 @@ let make = _children => {
           /* let u = user(state.email,state.password,state.firstname,state.lastname) |> */
           if (state.email != "" && state.password != "" && state.firstname != "" && state.lastname != "") {
             let promise =
-              postExecute(apiUrl, encodeUser(state.email, state.password, state.firstname, state.lastname), () =>
+              postExecute(apiUri, encodeUser(state.email, state.password, state.firstname, state.lastname), () =>
                 ReasonReact.Router.push("login")
               );
             ();
